@@ -44,12 +44,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
                 this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 2
             )
+        } else {
+            val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+            mapFragment.getMapAsync(this)
         }
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
-
     }
+
+
 
     override fun onMapReady(gMap: GoogleMap) {
         googleMap = gMap
@@ -101,7 +103,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Toast.makeText(this@MainActivity, "iojwnrgilr", Toast.LENGTH_SHORT).show()
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
     }
 
     // рисует круг
