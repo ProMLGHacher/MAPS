@@ -21,8 +21,8 @@ import com.google.android.gms.maps.model.*
 import com.google.android.gms.maps.model.LatLng
 
 import com.google.android.gms.maps.model.MarkerOptions
-
-
+import com.google.maps.android.heatmaps.Gradient
+import com.google.maps.android.heatmaps.HeatmapTileProvider
 
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickListener, GoogleMap.OnMarkerClickListener {
@@ -48,6 +48,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
             val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
             mapFragment.getMapAsync(this)
         }
+
+
 
     }
 
@@ -83,7 +85,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
                 .snippet("Additional text")
         )
 
-        addPolygon()
+        addHeatmap()
+//        addPolygon()
 
 
 
@@ -118,6 +121,38 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiCli
         circleOptions.strokeWidth(0f)
         googleMap.addCircle(circleOptions)
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(seattle))
+    }
+
+    fun addHeatmap() {
+        val issaquah = LatLng(47.5301011, -122.0326191)
+        val seattle = LatLng(47.6062095, -122.3320708)
+        val bellevue = LatLng(47.6101497, -122.2015159)
+        val sammamish = LatLng(47.6162683, -122.0355736)
+        val redmond = LatLng(47.6739881, -122.121512)
+
+        var latLngs = listOf<LatLng>(issaquah, redmond, sammamish, bellevue, seattle)
+
+        val colors = intArrayOf(
+            Color.rgb(255, 0, 0),  // green
+            Color.rgb(255, 0, 0) // red
+        )
+        val startPoints = floatArrayOf(0.2f, 1f)
+        val gradient = Gradient(colors, startPoints)
+
+        val provider = HeatmapTileProvider.Builder()
+            .data(latLngs)
+            .radius(50)
+            .opacity(0.5)
+            .gradient(gradient)
+            .maxIntensity(0.0)
+            .build()
+
+
+        val overlay = googleMap.addTileOverlay(TileOverlayOptions().tileProvider(provider))
+
+        moveCamera(seattle)
+
+
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
